@@ -15,7 +15,7 @@ ALTER TABLE changeintegrationoperation
 insert into changeintegrationoperation values (
     1,
     'COP0000001',
-    'Get the new structure metadata.'
+    'Define the new structure metadata.'
 );
 
 insert into changeintegrationoperation values (
