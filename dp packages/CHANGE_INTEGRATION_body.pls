@@ -30,7 +30,7 @@ create or replace package body change_integration as
      
     exception
         when others then
-            dbms_output.put_line('Subtype not found! ' || in_parenttype || '  ' || in_type); 
+            log_error('Subtype not found! CHANGE_PARENTTYPE_ID=' || in_parenttype || '; CHANGE_TYPE_ID=' || in_type); 
     end;
     
     return v_subtype;
@@ -53,7 +53,7 @@ create or replace package body change_integration as
       /*when in_change.ch_dataset_id is not null then
         v_subtype_prefix := CONST_DATA_SET;*/
       else
-        dbms_output.put_line('Change can not be detected!');
+        log_error('Could not detect change type! CHANGE_ID: ' || in_change.ch_id);
     end case;
      
     if v_subtype_prefix is not null then
@@ -64,9 +64,41 @@ create or replace package body change_integration as
      
   end define_change_type;
   
+  -- Insert process record with status 'Not integrated'    
+  procedure insert_change_integration_process(in_scenario_id in changeintegrationscenario.cis_id%type,
+                                              in_change_id   in change.ch_id%type) is    
+    v_process changeintegrationprocess%rowtype;
+  begin
+                                  
+    v_process := null;
+    v_process.cip_id := CHANGEINTEGRATIONPROCESS_SQ.nextval;
+    v_process.cip_scenario_id := in_scenario_id;
+    v_process.cip_datetime := sysdate;
+    v_process.cip_author_id := CONST_SYSTEM_AUTHOR;
+    v_process.cip_statustype_id := CONST_NOT_INTEGRATED;
+    v_process.cip_change_id := in_change_id;
+            
+    insert into changeintegrationprocess 
+         values v_process;
+        
+  end insert_change_integration_process;
+ 
+  -- Update change record to 'In progress'
+  procedure update_change_in_progress(in_change_id change.ch_id%type)is
+  begin
+    
+    update change c
+       set c.ch_statustype_id = CONST_IN_PROGRESS
+     where c.ch_id = in_change_id;
+             
+    if SQL%rowcount = 0 then 
+      log_error('Could not find change record! CHANGE_ID=' || in_change_id);
+    end if;
+    
+  end update_change_in_progress;
+  
   -- Processes all uningtegrated changes
   procedure integrate_changes is
-    v_process changeintegrationprocess%rowtype;
     v_change_type types.tp_id%type;
     
   begin
@@ -87,24 +119,10 @@ create or replace package body change_integration as
                                connect by prior cis.cis_id = cis_parentscenario_id
                                  order by cis.cis_operation_id) loop
                                  
-            -- Inserts process records with status 'Not integrated'            
-            v_process := null;
-            v_process.cip_id := CHANGEINTEGRATIONPROCESS_SQ.nextval;
-            v_process.cip_scenario_id := scenario_step.cis_id;
-            v_process.cip_datetime := sysdate;
-            v_process.cip_author_id := CONST_SYSTEM_AUTHOR;
-            v_process.cip_statustype_id := CONST_NOT_INTEGRATED;
-            v_process.cip_change_id := new_change.ch_id;
+            insert_change_integration_process(scenario_step.cis_id, new_change.ch_id);
             
-            insert into changeintegrationprocess 
-                 values v_process;
+            update_change_in_progress(new_change.ch_id);
             
-            -- updates change record to 'In progress'
-            update change c
-               set c.ch_statustype_id = CONST_IN_PROGRESS
-             where c.ch_id = new_change.ch_id;
-            
-            dbms_output.put_line('Success! ('|| v_process.cip_id ||')');
           end loop;
       end if;
     end loop;
