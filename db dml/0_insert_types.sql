@@ -298,3 +298,17 @@ insert into types values ('MPR0000002', 'DATA_LENGTH', 'MPR0000000');
 insert into types values ('MPR0000003', 'DATA_PRECISION', 'MPR0000000');
 insert into types values ('MPR0000004', 'DATA_SCALE', 'MPR0000000');
 insert into types values ('MPR0000005', 'NULLABLE', 'MPR0000000');
+
+
+
+insert into types values ('CHT0000011', 'Metadata property addition', 'CHT0000001');
+insert into types values ('CHT0000012', 'Data item addition', 'CHT0000001');
+insert into types values ('CHT0000013', 'Data highway level addition', 'CHT0000001');
+insert into types values ('CHT0000014', 'Data set addition', 'CHT0000001');
+
+insert into types values ('CHT0000021', 'Metadata property deletion', 'CHT0000002');
+insert into types values ('CHT0000022', 'Data item deletion', 'CHT0000002');
+insert into types values ('CHT0000023', 'Data highway level deletion', 'CHT0000002');
+insert into types values ('CHT0000024', 'Data set deletion', 'CHT0000002');
+
+insert into types values ('CHT0000031', 'Metadata value update', 'CHT0000003');

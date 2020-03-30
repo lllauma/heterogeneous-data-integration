@@ -1,7 +1,6 @@
-create or replace 
-package change_integration as 
+create or replace package change_integration as
 
-  CONST_NEW_CHANGE varchar2(10) := 'STT0000001';
+  function define_change_type(in_change in change%rowtype) return types.tp_id%type;
   
   procedure integrate_changes;
 
