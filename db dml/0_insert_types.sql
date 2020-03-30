@@ -291,6 +291,23 @@ INSERT INTO types VALUES (
     'Predicate',
     'RLT0000000'
 );
+INSERT INTO types VALUES (
+    'COP0000000',
+    'Change integration operation type',
+    NULL
+);
+
+INSERT INTO types VALUES (
+    'COP0000001',
+    'Manual',
+    'COP0000000'
+);
+
+INSERT INTO types VALUES (
+    'COP0000002',
+    'Automatic',
+    'COP0000000'
+);
 
 insert into types values ('MPR0000000', 'Pre-defined metadata property', null);
 insert into types values ('MPR0000001', 'DATA_TYPE', 'MPR0000000');
@@ -312,3 +329,21 @@ insert into types values ('CHT0000023', 'Data highway level deletion', 'CHT00000
 insert into types values ('CHT0000024', 'Data set deletion', 'CHT0000002');
 
 insert into types values ('CHT0000031', 'Metadata value update', 'CHT0000003');
+
+INSERT INTO types VALUES (
+    'CIP0000000',
+    'Change integration operation status type',
+    NULL
+);
+
+INSERT INTO types VALUES (
+    'CIP0000001',
+    'Not integrated',
+    'CIP0000000'
+);
+
+INSERT INTO types VALUES (
+    'CIP0000002',
+    'Integrated',
+    'CIP0000000'
+);

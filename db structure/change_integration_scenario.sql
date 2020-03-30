@@ -18,38 +18,9 @@ ALTER TABLE changeintegrationscenario
 ALTER TABLE changeintegrationscenario
     ADD CONSTRAINT cis_changetype_fk FOREIGN KEY ( cis_changetype_id )
         REFERENCES types ( tp_id );
-        
-insert into changeintegrationscenario values (
-    1,
-    1,
-    null,
-    'CHT0000011'
-);
 
-insert into changeintegrationscenario values (
-    2,
-    2,
-    1,
-    'CHT0000011'
-);
-
-insert into changeintegrationscenario values (
-    3,
-    3,
-    2,
-    'CHT0000011'
-);
-
-insert into changeintegrationscenario values (
-    4,
-    3,
-    null,
-    'CHT0000012'
-);
-
-insert into changeintegrationscenario values (
-    5,
-    2,
-    4,
-    'CHT0000012'
-);
+insert into changeintegrationscenario values(1, 1, null, 'CHT0000013');
+insert into changeintegrationscenario values(2, 2, 1, 'CHT0000013');
+insert into changeintegrationscenario values(3, 3, 2, 'CHT0000013');
+insert into changeintegrationscenario values(5, 5, 3, 'CHT0000013');
+insert into changeintegrationscenario values(4, 4, 5, 'CHT0000013');

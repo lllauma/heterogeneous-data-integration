@@ -25,22 +25,4 @@ ALTER TABLE changeintegrationprocess
     ADD CONSTRAINT cip_change_fk FOREIGN KEY ( cip_change_id )
         REFERENCES change ( ch_id );
 
-INSERT INTO types VALUES (
-    'CIP0000000',
-    'Change integration operation status type',
-    NULL
-);
-
-INSERT INTO types VALUES (
-    'CIP0000001',
-    'Not integrated',
-    'CIP0000000'
-);
-
-INSERT INTO types VALUES (
-    'CIP0000002',
-    'Integrated',
-    'CIP0000000'
-);
-
 CREATE SEQUENCE CHANGEINTEGRATIONPROCESS_SQ INCREMENT BY 1 START WITH 1 MAXVALUE 999999 MINVALUE 1;

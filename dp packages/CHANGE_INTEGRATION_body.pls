@@ -21,7 +21,7 @@ create or replace package body change_integration as
                                       in_type       in varchar2) return types.tp_id%type is
    v_subtype types.tp_id%type default null;
   begin
-    begin
+    begin   
         select t.tp_id
           into v_subtype
           from types t
@@ -29,8 +29,8 @@ create or replace package body change_integration as
            and UPPER(t.tp_type) like in_type||'%';
      
     exception
-        when no_data_found then
-        dbms_output.put_line('Subtype not found! ' || in_parenttype || '  ' || in_type); 
+        when others then
+            dbms_output.put_line('Subtype not found! ' || in_parenttype || '  ' || in_type); 
     end;
     
     return v_subtype;
@@ -39,24 +39,28 @@ create or replace package body change_integration as
   -- Defines exact change type (subtype) by change record
   function define_change_type(in_change in change%rowtype) return types.tp_id%type is
     v_subtype_prefix varchar2(50);
+    v_type types.tp_id%type default null;
   begin
     case
-      when in_change.ch_attrname is not null then
+      /*when in_change.ch_attrname is not null then
         v_subtype_prefix := CONST_METADATA_VAL_UPDATE;
       when in_change.ch_metadataproperty_id is not null then
         v_subtype_prefix := CONST_METADATA_PROPERTY;
       when in_change.ch_dataitem_id is not null then
-        v_subtype_prefix := CONST_DATA_ITEM;
-      when in_change.ch_datahighwaylevel_id is not null then
+        v_subtype_prefix := CONST_DATA_ITEM;*/
+      when in_change.ch_datahighwaylevel_id is not null and in_change.ch_attrname is null then
         v_subtype_prefix := CONST_DATA_HIGHWAY_LVL;
-      when in_change.ch_dataset_id is not null then
-        v_subtype_prefix := CONST_DATA_SET;
+      /*when in_change.ch_dataset_id is not null then
+        v_subtype_prefix := CONST_DATA_SET;*/
       else
         dbms_output.put_line('Change can not be detected!');
     end case;
      
-    return find_subtype_by_parenttype(in_change.ch_changetype_id, v_subtype_prefix);
-     
+    if v_subtype_prefix is not null then
+      v_type := find_subtype_by_parenttype(in_change.ch_changetype_id, v_subtype_prefix);
+    end if;
+    
+    return v_type;     
      
   end define_change_type;
   
