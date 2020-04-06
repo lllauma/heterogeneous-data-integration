@@ -1,4 +1,4 @@
-create or replace package body change_integration as
+create or replace package body change_adaptation as
   -- Change status
   CONST_NEW_CHANGE                types.tp_id%type := 'STT0000001';
   CONST_IN_PROGRESS               types.tp_id%type := 'STT0000002';
@@ -65,23 +65,23 @@ create or replace package body change_integration as
   end define_change_type;
   
   -- Insert process record with status 'Not integrated'    
-  procedure insert_change_integration_process(in_scenario_id in changeintegrationscenario.cis_id%type,
+  procedure insert_change_adaptation_process(in_scenario_id in changeadaptationscenario.cas_id%type,
                                               in_change_id   in change.ch_id%type) is    
-    v_process changeintegrationprocess%rowtype;
+    v_process changeadaptationprocess%rowtype;
   begin
                                   
     v_process := null;
-    v_process.cip_id := CHANGEINTEGRATIONPROCESS_SQ.nextval;
-    v_process.cip_scenario_id := in_scenario_id;
-    v_process.cip_datetime := sysdate;
-    v_process.cip_author_id := CONST_SYSTEM_AUTHOR;
-    v_process.cip_statustype_id := CONST_NOT_INTEGRATED;
-    v_process.cip_change_id := in_change_id;
+    v_process.cap_id := CHANGEADAPTATIONPROCESS_SQ.nextval;
+    v_process.cap_scenario_id := in_scenario_id;
+    v_process.cap_datetime := sysdate;
+    v_process.cap_author_id := CONST_SYSTEM_AUTHOR;
+    v_process.cap_statustype_id := CONST_NOT_INTEGRATED;
+    v_process.cap_change_id := in_change_id;
             
-    insert into changeintegrationprocess 
+    insert into changeadaptationprocess 
          values v_process;
         
-  end insert_change_integration_process;
+  end insert_change_adaptation_process;
  
   -- Update change record to 'In progress'
   procedure update_change_in_progress(in_change_id change.ch_id%type)is
@@ -98,7 +98,7 @@ create or replace package body change_integration as
   end update_change_in_progress;
   
   -- Processes all uningtegrated changes
-  procedure integrate_changes is
+  procedure adapt_changes is
     v_change_type types.tp_id%type;
     
   begin
@@ -112,14 +112,14 @@ create or replace package body change_integration as
       
       if v_change_type is not null then
           --  for each new change finds all possible integration scenario steps              
-          for scenario_step in (select cis.cis_id
-                                  from changeintegrationscenario cis
-                                 where cis.cis_changetype_id = v_change_type
-                                 start with cis.cis_parentscenario_id is null
-                               connect by prior cis.cis_id = cis_parentscenario_id
-                                 order by cis.cis_operation_id) loop
+          for scenario_step in (select cas.cas_id
+                                  from changeadaptationscenario cas
+                                 where cas.cas_changetype_id = v_change_type
+                                 start with cas.cas_parentscenario_id is null
+                               connect by prior cas.cas_id = cas_parentscenario_id
+                                 order by cas.cas_operation_id) loop
                                  
-            insert_change_integration_process(scenario_step.cis_id, new_change.ch_id);
+            insert_change_adaptation_process(scenario_step.cas_id, new_change.ch_id);
             
             update_change_in_progress(new_change.ch_id);
             
@@ -127,6 +127,6 @@ create or replace package body change_integration as
       end if;
     end loop;
     
-  end integrate_changes;
+  end adapt_changes;
 
-end change_integration;
+end change_adaptation;
