@@ -10,19 +10,19 @@ CREATE TABLE changeadaptationprocess (
 ALTER TABLE changeadaptationprocess ADD CONSTRAINT process_pk PRIMARY KEY ( cap_id );
 
 ALTER TABLE changeadaptationprocess
-    ADD CONSTRAINT cip_scenario_fk FOREIGN KEY ( cap_scenario_id )
+    ADD CONSTRAINT cap_scenario_fk FOREIGN KEY ( cap_scenario_id )
         REFERENCES changeadaptationscenario ( cas_id );
         
 ALTER TABLE changeadaptationprocess
-    ADD CONSTRAINT cip_author_fk FOREIGN KEY ( cap_author_id )
+    ADD CONSTRAINT cap_author_fk FOREIGN KEY ( cap_author_id )
         REFERENCES author ( AU_ID );
         
 ALTER TABLE changeadaptationprocess
-    ADD CONSTRAINT cip_statustype_fk FOREIGN KEY ( cap_statustype_id )
+    ADD CONSTRAINT cap_statustype_fk FOREIGN KEY ( cap_statustype_id )
         REFERENCES types ( tp_id );
         
 ALTER TABLE changeadaptationprocess
-    ADD CONSTRAINT cip_change_fk FOREIGN KEY ( cap_change_id )
+    ADD CONSTRAINT cap_change_fk FOREIGN KEY ( cap_change_id )
         REFERENCES change ( ch_id );
 
 CREATE SEQUENCE changeadaptationprocess_SQ INCREMENT BY 1 START WITH 1 MAXVALUE 999999 MINVALUE 1;

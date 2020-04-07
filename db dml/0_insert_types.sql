@@ -322,6 +322,7 @@ insert into types values ('CHT0000011', 'Metadata property addition', 'CHT000000
 insert into types values ('CHT0000012', 'Data item addition', 'CHT0000001');
 insert into types values ('CHT0000013', 'Data highway level addition', 'CHT0000001');
 insert into types values ('CHT0000014', 'Data set addition', 'CHT0000001');
+insert into types values ('CHT0000015', 'Data source addition', 'CHT0000001');
 
 insert into types values ('CHT0000021', 'Metadata property deletion', 'CHT0000002');
 insert into types values ('CHT0000022', 'Data item deletion', 'CHT0000002');
