@@ -348,3 +348,37 @@ INSERT INTO types VALUES (
     'Integrated',
     'CIP0000000'
 );
+
+
+INSERT INTO types VALUES (
+    'CAD0000000',
+    'Change adaptation additional data type',
+    NULL
+);
+
+INSERT INTO types VALUES (
+    'CAD0000001',
+    'Dataset example',
+    'CAD0000000'
+);
+
+INSERT INTO types VALUES (
+    'CON0000000',
+    'Condition type',
+    NULL
+);
+
+INSERT INTO types VALUES (
+    'CON0000001',
+    'Automatic condition',
+    'CAD0000000'
+);
+
+INSERT INTO types VALUES (
+    'CON0000002',
+    'Manual condition',
+    'CAD0000000'
+);
+
+
+
