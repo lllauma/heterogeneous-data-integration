@@ -1,7 +1,7 @@
 CREATE TABLE CA_ConditionMapping (
     cacm_id                    NUMBER(10) NOT NULL,
     cacm_scenario_id           number(10) not null,
-    cacm_condition_id          number(10)
+    cacm_condition_id          number(10) not null
 );
 
 

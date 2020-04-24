@@ -1,0 +1,35 @@
+<font face="Courier New" size="2">
+<font color = "green"><i>&#45;&#45;&#45;&#45;&nbsp;Tries&nbsp;to&nbsp;execute&nbsp;adaptation&nbsp;scenario&nbsp;for&nbsp;specific&nbsp;change&nbsp;</i></font>
+<br/><font color = "green"><i>&#45;&#45;&#45;&#45;&nbsp;(only&nbsp;consecutive,&nbsp;not&nbsp;already&nbsp;adapted&nbsp;and&nbsp;automatic&nbsp;</i></font>
+<br/><font color = "green"><i>&#45;&#45;&#45;&#45;&nbsp;&nbsp;change&nbsp;scenario&nbsp;operations&nbsp;can&nbsp;be&nbsp;executed)</i></font>
+<br/><font color = "blue">PROCEDURE</font>&nbsp;<font color = "#FF0080"><b>Run_change_adaptation_scenario</b></font><font color = "maroon">(</font><font color = "maroon">in_change_id</font>&nbsp;<font color = "blue">IN</font>&nbsp;<font color = "blue">CHANGE</font><font color = "silver">.</font><font color = "maroon">ch_id</font><font color = "silver">%</font><font color = "black"><i>TYPE</i></font><font color = "maroon">)</font>
+<br/><font color = "blue">IS</font>
+<br/>&nbsp;&nbsp;<font color = "maroon">v_change_scenario</font>&nbsp;<font color = "black"><i>SYS_REFCURSOR</i></font><font color = "silver">;</font>
+<br/>&nbsp;&nbsp;<font color = "maroon">v_scenario_step</font>&nbsp;&nbsp;&nbsp;<font color = "black"><i>T_SCENARIO_STEP</i></font><font color = "silver">;</font>
+<br/><font color = "blue">BEGIN</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;<font color = "maroon">v_change_scenario</font>&nbsp;<font color = "blue">:=</font>&nbsp;<font color = "#FF0080"><b>Get_change_adaptation_scenario</b></font><font color = "maroon">(</font><font color = "maroon">in_change_id</font><font color = "maroon">)</font><font color = "silver">;</font>
+
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;<font color = "blue">LOOP</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "blue">FETCH</font>&nbsp;<font color = "maroon">v_change_scenario</font>&nbsp;<font color = "blue">INTO</font>&nbsp;<font color = "maroon">v_scenario_step</font><font color = "silver">;</font>
+
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "maroon">exit</font>&nbsp;<font color = "blue">WHEN</font>&nbsp;<font color = "maroon">v_change_scenario</font><font color = "silver">%</font><font color = "blue">NOTFOUND</font><font color = "silver">;</font>
+<br/>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "green"><i>&#45;&#45;&nbsp;processes&nbsp;only&nbsp;not&nbsp;adapted&nbsp;automatic&nbsp;changes</i></font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "blue">IF</font>&nbsp;<font color = "maroon">v_scenario_step</font><font color = "silver">.</font><font color = "maroon">operation_status_id</font>&nbsp;<font color = "silver">=</font>&nbsp;<font color = "maroon">const_not_adapted</font>&nbsp;<font color = "blue">THEN</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "green"><i>&#45;&#45;check&nbsp;conditions</i></font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "blue">IF</font>&nbsp;<font color = "maroon">v_scenario_step</font><font color = "silver">.</font><font color = "maroon">operation_type_id</font>&nbsp;<font color = "silver">=</font>&nbsp;<font color = "maroon">const_automatic</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "blue">AND</font>&nbsp;<font color = "#FF0080"><b>Conditions_fulfilled</b></font><font color = "maroon">(</font><font color = "maroon">in_change_id</font><font color = "silver">,</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "maroon">v_scenario_step</font><font color = "silver">.</font><font color = "maroon">automatic_condition</font><font color = "silver">,</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "maroon">v_scenario_step</font><font color = "silver">.</font><font color = "maroon">process_id</font><font color = "maroon">)</font>&nbsp;<font color = "blue">THEN</font>
+<br/>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "#FF0080"><b>Execute_adaptation_procedure</b></font><font color = "maroon">(</font><font color = "maroon">in_change_id</font><font color = "silver">,</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "maroon">v_scenario_step</font><font color = "silver">.</font><font color = "maroon">operation_instruction</font><font color = "maroon">)</font><font color = "silver">;</font>
+<br/>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "#FF0080"><b>Set_process_adapted</b></font><font color = "maroon">(</font><font color = "maroon">v_scenario_step</font><font color = "silver">.</font><font color = "maroon">process_id</font><font color = "maroon">)</font><font color = "silver">;</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "blue">END</font>&nbsp;<font color = "blue">IF</font><font color = "silver">;</font>
+
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "maroon">exit</font><font color = "silver">;</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "blue">END</font>&nbsp;<font color = "blue">IF</font><font color = "silver">;</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;<font color = "blue">END</font>&nbsp;<font color = "blue">LOOP</font><font color = "silver">;</font>
+<br/><font color = "blue">END</font>&nbsp;<font color = "maroon">run_change_adaptation_scenario</font><font color = "silver">;</font>&nbsp;
+</font>

@@ -1,1 +1,0 @@
-1. Kāda atšķirība starp tabulām AUTHOR un USER_TAB?
