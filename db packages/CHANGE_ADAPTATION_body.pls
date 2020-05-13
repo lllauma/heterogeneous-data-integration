@@ -112,13 +112,14 @@ create or replace package body change_adaptation as
         v_subtype_prefix := CONST_DATA_HIGHWAY_LVL;
       when in_change.ch_dataset_id is not null then
         v_subtype_prefix := CONST_DATA_SET;
+      when in_change.ch_dataitem_id is not null then
+        v_subtype_prefix := CONST_DATA_ITEM;
       /*when in_change.ch_attrname is not null then
         v_subtype_prefix := CONST_METADATA_VAL_UPDATE;
       when in_change.ch_metadataproperty_id is not null then
-        v_subtype_prefix := CONST_METADATA_PROPERTY;
-      when in_change.ch_dataitem_id is not null then
-        v_subtype_prefix := CONST_DATA_ITEM;*/
+        v_subtype_prefix := CONST_METADATA_PROPERTY;*/
       else
+        dbms_output.put_line('Could not detect change type! CHANGE_ID: ' || in_change.ch_id);
         log_error('Could not detect change type! CHANGE_ID: ' || in_change.ch_id);
     end case;
      
